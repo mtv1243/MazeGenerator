@@ -67,11 +67,60 @@ class Graph {
         this.adjList[vert1].edges.push(vert2);
         this.adjList[vert2].edges.push(vert1);
     }
+
+    // depth first search iterative maze generation
+    createMazeDfsIter(src = 0) {
+
+        let stack = [src];   
+        let visited = [];    
+
+        // while there are items in stack
+        while (stack.length > 0) {
+            // pop off last vert aded to stack
+            // this is LIFO
+            let currentVertId = stack.pop();
+            let currentVert = this.adjList[currentVertId]; 
+
+            // if currentVert has not been visited
+            if (!visited.includes(currentVert.id)) {
+
+                // add current to visited
+                visited.push(currentVert.id);
+
+                // find unvisited neighbors of current
+                let validNeighbors = currentVert.neighbors.filter(n => !visited.includes(n));
+                console.log(`validNeighbors: ${validNeighbors}`);
+
+                // add valid neighbors to stack in random order
+                for (let i = 0; i < validNeighbors.length; i++) {
+                    // grab random neighbor
+                    let randIndex = Math.floor(Math.random() * validNeighbors.length);
+                    // push rand neighbor to stack
+                    stack.push(validNeighbors[randIndex]);
+                    console.log(`pushing ${validNeighbors[randIndex]} to stack`);
+                    // remove rand neighbor
+                    validNeighbors.splice(randIndex, 1);
+                }
+
+                // create edge
+                // if a neighbor of the current vert is next in stack, create edge
+                let nextVert = stack[stack.length - 1];
+                if (currentVert.neighbors.includes(nextVert)) {
+                    this.createEdge(currentVert.id, nextVert);
+                }
+            }
+        }
+        console.log(visited);
+    }
+
 }
 
 let graph = new Graph(5);
 
-console.log(util.inspect(graph,{ depth: null }));
+graph.createMazeDfsIter(0);
+graph.printEdges();
+
+// console.log(util.inspect(graph,{ depth: null }));
 // graph.printNeighbors();
 // graph.createEdge(6, 7);
 // console.log(graph.findVert(6));
