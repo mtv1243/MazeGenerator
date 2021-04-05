@@ -71,48 +71,46 @@ class Graph {
     // depth first search iterative maze generation
     createMazeDfsIter(src = 0) {
 
-        let stack = [src];   
-        let visited = [];    
+        let stack = [src];
+        let visited = [src];
 
         // while there are items in stack
         while (stack.length > 0) {
-            // pop off last vert aded to stack
+            // pop off last vert added to stack
             // this is LIFO
             let currentVertId = stack.pop();
-            let currentVert = this.adjList[currentVertId]; 
+            let currentVert = this.adjList[currentVertId];
+            let hasValidNeighbors = false;
 
-            // if currentVert has not been visited
-            if (!visited.includes(currentVert.id)) {
+            // if a neighbor has not been visited, change hasValidNeighbors to true
+            currentVert.neighbors.forEach(n => {
+                if (!visited.includes(n)) {
+                    hasValidNeighbors = true;
+                }
+            })
 
-                // add current to visited
-                visited.push(currentVert.id);
+            // if currentVert has 1 or more unvisited neighbors
+            if (hasValidNeighbors) {
 
-                // find unvisited neighbors of current
+                // add current to stack
+                stack.push(currentVert.id);
+
+                // find unvisited neighbors of current, hold in new array
                 let validNeighbors = currentVert.neighbors.filter(n => !visited.includes(n));
-                console.log(`validNeighbors: ${validNeighbors}`);
 
-                // add valid neighbors to stack in random order
-                for (let i = 0; i < validNeighbors.length; i++) {
-                    // grab random neighbor
-                    let randIndex = Math.floor(Math.random() * validNeighbors.length);
-                    // push rand neighbor to stack
-                    stack.push(validNeighbors[randIndex]);
-                    console.log(`pushing ${validNeighbors[randIndex]} to stack`);
-                    // remove rand neighbor
-                    validNeighbors.splice(randIndex, 1);
-                }
+                // grab random valid neighbor
+                let nextVert = validNeighbors[Math.floor(Math.random() * validNeighbors.length)];
 
-                // create edge
-                // if a neighbor of the current vert is next in stack, create edge
-                let nextVert = stack[stack.length - 1];
-                if (currentVert.neighbors.includes(nextVert)) {
-                    this.createEdge(currentVert.id, nextVert);
-                }
+                // create edge between current and random valid neighbor
+                this.createEdge(currentVertId, nextVert);
+
+                // push nextVert to stack and mark as visited, making it the new currentVert
+                stack.push(nextVert);
+                visited.push(nextVert);
             }
         }
-        console.log(visited);
-    }
 
+    }
 }
 
 let graph = new Graph(5);
