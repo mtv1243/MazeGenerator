@@ -1,4 +1,4 @@
-const util = require("util");
+// const util = require("util");
 
 class Vertex {
     constructor(id, edgeLength) {
@@ -111,12 +111,70 @@ class Graph {
         }
 
     }
+
+    visualize() {
+        let binaryEdges = [];
+        // for each vert in adjList
+        for (let i = 0; i < this.totalVerts; i++) {
+
+            // find potential neighbors
+            // does not matter if they are valid neighbors, must have all four numbers
+            let north = i - this.edgeLength;
+            let east = i + 1;
+            let south = i + this.edgeLength;
+            let west = i - 1;
+            let row = Math.floor(i / this.edgeLength);
+
+            // get the edges of the current vert
+            let currentEdges = this.adjList[i].edges;
+
+            // create container of binary edges
+            let currentBinaryEdges = [];
+
+            // if row does not exist, create it
+            if (!binaryEdges[row]) {
+                binaryEdges[row] = [];
+            }
+
+            // does each neighbor exist in current edges?
+            // check north
+            if (currentEdges.indexOf(north) !== -1) {
+                currentBinaryEdges.push(1);
+            } else {
+                currentBinaryEdges.push(0);
+            }
+
+            // check east
+            if (currentEdges.indexOf(east) !== -1) {
+                currentBinaryEdges.push(1);
+            } else {
+                currentBinaryEdges.push(0);
+            }
+
+            // check south
+            if (currentEdges.indexOf(south) !== -1) {
+                currentBinaryEdges.push(1);
+            } else {
+                currentBinaryEdges.push(0);
+            }
+
+            // check west
+            if (currentEdges.indexOf(west) !== -1) {
+                currentBinaryEdges.push(1);
+            } else {
+                currentBinaryEdges.push(0);
+            }
+
+            binaryEdges[row].push(currentBinaryEdges);
+        }
+        return binaryEdges;
+    }
 }
 
-let graph = new Graph(5);
+// let graph = new Graph(5);
 
-graph.createMazeDfsIter(0);
-graph.printEdges();
+// graph.createMazeDfsIter(0);
+// graph.printEdges();
 
 // console.log(util.inspect(graph,{ depth: null }));
 // graph.printNeighbors();

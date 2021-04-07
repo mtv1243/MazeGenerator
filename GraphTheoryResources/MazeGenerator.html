@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Helper File</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        .graph {
+            
+            margin: 0 auto;
+            width: 6rem;
+        }
+        .vert {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            border: 1px solid;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        .controls {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        button {
+            text-align: center;
+            display: inline-block;
+            margin: 20px auto;
+        }
+        .edgelength {
+            margin: 10px auto;
+            display: block;
+            width: 65px;
+        }
+        table {
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+        .trow {
+            padding: 0;
+            margin: 0;
+            width:6rem;
+        }
+        .cell {
+            min-width:20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    
+    <!-- <svg width="500" height="500"><line x1="50" y1="50" x2="350" y2="350" stroke="black"/></svg>
+
+    <div id="div1" style="width: 100px; height: 100px; top:0; left:0; background:#777; position:absolute;"></div>
+    <div id="div2" style="width: 100px; height: 100px; top:300px; left:300px; background:#333; position:absolute;"></div>
+    -->
+    
+    <!-- <div class="graph"></div>  -->
+
+    <!-- Myles Code below -->
+    <div class="controls">
+        
+        <label for="edgelength">Edgelength</label>
+        <input class="edgelength" name="edgelength" type="number" value="25" placeholder="edgelength">
+        <button id="new-maze" onclick="generateNewMaze()">Generate New Maze</button>
+
+    </div>
+
+    <div id="maze"></div>
+
+
+    <script src="./mazeGen.js"></script>
+    <script>
+
+        generateNewMaze();
+
+        function generateNewMaze() {
+
+        let edgeLength = parseInt(document.querySelector(".edgelength").value);
+
+        let graph = new Graph(edgeLength);
+
+        graph.createMazeDfsIter(0);
+        // graph.printEdges();
+        let binaryEdges = graph.visualize();
+
+        let mazeEl = document.querySelector("#maze");
+        mazeEl.innerHTML = "";
+        let table = document.createElement("table");
+
+        for(let i=0; i<binaryEdges.length; i++) {
+
+            let row = document.createElement("tr");
+            row.classList.add('trow');
+
+            for(let j=0; j<binaryEdges[i].length; j++) {
+                
+                let edges = binaryEdges[i][j];
+
+                let cell = document.createElement("td");
+                cell.classList.add("cell");
+
+                if(edges[0] === 0) {
+                    cell.style.borderTop = "2px solid";
+                } else {
+                    cell.style.borderTop = "none";
+                }
+                
+                if(edges[1] === 0) {
+                    cell.style.borderRight = "2px solid";
+                } else {
+                    cell.style.borderRight = "none";
+                }
+                
+                if(edges[2] === 0) {
+                    cell.style.borderBottom = "2px solid";
+                } else {
+                    cell.style.borderBottom = "none";
+                }
+
+                if(edges[3] === 0) {
+                    cell.style.borderLeft = "2px solid";
+                } else {
+                    cell.style.borderLeft = "none";
+                }
+
+                row.appendChild(cell);
+            }
+
+            table.appendChild(row);
+        }
+        mazeEl.appendChild(table);
+
+        /**
+         * el if(edges[0]){
+         * }
+         * 
+         */
+         }
+
+    </script>
+
+    
+</body>
+</html>
