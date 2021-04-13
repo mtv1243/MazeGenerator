@@ -9,11 +9,12 @@
         * {
             box-sizing: border-box;
         }
+
         .graph {
-            
             margin: 0 auto;
             width: 6rem;
         }
+
         .vert {
             display: inline-block;
             width: 2rem;
@@ -22,6 +23,7 @@
             border-spacing: 0;
             border-collapse: collapse;
         }
+
         .controls {
             text-align: center;
             display: flex;
@@ -29,47 +31,54 @@
             justify-content: center;
             align-items: center;
         }
+
         button {
             text-align: center;
             display: inline-block;
             margin: 20px auto;
         }
+
         .edgelength {
             margin: 10px auto;
             display: block;
             width: 65px;
         }
+
         table {
             border-collapse: collapse;
             margin: 0 auto;
+            font-size: .5rem;
         }
+
         .trow {
             padding: 0;
             margin: 0;
-            width:6rem;
+            width: 6rem;
         }
+
         .cell {
-            min-width:20px;
+            min-width: 20px;
             height: 20px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    
-    <!-- <svg width="500" height="500"><line x1="50" y1="50" x2="350" y2="350" stroke="black"/></svg>
-
-    <div id="div1" style="width: 100px; height: 100px; top:0; left:0; background:#777; position:absolute;"></div>
-    <div id="div2" style="width: 100px; height: 100px; top:300px; left:300px; background:#333; position:absolute;"></div>
-    -->
-    
-    <!-- <div class="graph"></div>  -->
-
-    <!-- Myles Code below -->
     <div class="controls">
-        
+
         <label for="edgelength">Edgelength</label>
-        <input class="edgelength" name="edgelength" type="number" value="25" placeholder="edgelength">
+        <input class="edgelength" name="edgelength" type="number" value="4" placeholder="edgelength">
+        <label for="mazeType">Maze generation algorithm:</label>
+        <select name="mazeType" id="mazeType">
+            <option value="aldous">Aldous/Broder</option>
+            <option value="dfs">Depth First Iterative</option>
+            <option value="wilsons" selected>Wilson's (Loop-Erased Random Walk)</option>
+        </select>
+        <span>
+            <label for="numbered">Numbered cells?</label>
+            <input type="checkbox" value="true" name="numbered" id="numbered">
+        </span>
         <button id="new-maze" onclick="generateNewMaze()">Generate New Maze</button>
 
     </div>
@@ -85,16 +94,31 @@
         function generateNewMaze() {
 
         let edgeLength = parseInt(document.querySelector(".edgelength").value);
+        let isNumbered = document.querySelector("#numbered").checked;
 
         let graph = new Graph(edgeLength);
 
-        graph.createMazeDfsIter(0);
-        // graph.printEdges();
+        let mazeType = document.querySelector("#mazeType").value;
+
+        switch (mazeType) {
+            case "wilsons":
+                graph.createMazeWilsons();
+                break;
+            case "dfs":
+                graph.createMazeDfsIter();
+                break;
+            case "aldous":
+                graph.createMazeAldous();
+                break;
+        }
+
         let binaryEdges = graph.visualize();
 
         let mazeEl = document.querySelector("#maze");
         mazeEl.innerHTML = "";
         let table = document.createElement("table");
+
+        let counter = 0;
 
         for(let i=0; i<binaryEdges.length; i++) {
 
@@ -107,6 +131,11 @@
 
                 let cell = document.createElement("td");
                 cell.classList.add("cell");
+
+                if (isNumbered) {
+                    cell.innerHTML = counter;
+                    counter++;
+                }
 
                 if(edges[0] === 0) {
                     cell.style.borderTop = "2px solid";
@@ -132,18 +161,22 @@
                     cell.style.borderLeft = "none";
                 }
 
+                // check if first cell, make green
+                if (j === 0 && i === 0) {
+                    cell.style.backgroundColor = "#00e50b";
+                }
+
+                // check if last cell, make red
+                if (j === binaryEdges.length - 1 && i === binaryEdges.length - 1) {
+                    cell.style.backgroundColor = "#ff5e5e";
+                }
+
                 row.appendChild(cell);
             }
 
             table.appendChild(row);
         }
         mazeEl.appendChild(table);
-
-        /**
-         * el if(edges[0]){
-         * }
-         * 
-         */
          }
 
     </script>

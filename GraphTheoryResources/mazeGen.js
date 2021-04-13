@@ -112,6 +112,96 @@ class Graph {
 
     }
 
+    createMazeAldous() {
+        // pick random vertex, add to maze
+        let currentVert = this.adjList[Math.floor(Math.random() * this.adjList.length)];
+        let maze = [currentVert.id];
+
+        // while any cells are not in maze
+        while (maze.length < this.adjList.length) {
+            // choose random neighbor of currentVert and travel to it
+            let r = Math.floor(Math.random() * currentVert.neighbors.length);
+            let neighbor = currentVert.neighbors[r];
+
+            // if neighbor not in maze, add it to maze and create edge
+            if (maze.indexOf(neighbor) === -1) {
+                this.createEdge(currentVert.id, neighbor);
+                maze.push(neighbor);
+            }
+            // step to the neighbor, making it the new currentVert
+            currentVert = this.adjList[neighbor];
+        }
+    }
+
+    createMazeWilsons() {
+
+        let maze = [];
+        let options = [];
+
+        // populate the options array with ints from 0 to length of adjacency list
+        // this is a mutable stand-in for the adjacency list
+        for (let i = 0; i < this.adjList.length; i++) {
+            options[i] = i;
+        }
+
+        // choose random vertexId to start with, remove from options
+        let randVert = Math.floor(Math.random() * options.length);
+        maze.push(randVert);
+        options.splice(randVert, 1);
+
+        // performs the loop erased walk
+        // while there are vertices not in the maze
+        while (maze.length < this.adjList.length) {
+
+            // select any vertex not in maze and perform random walk until you encounter a vertex in the maze
+            let root = options[Math.floor(Math.random() * options.length)];
+            let path = [root];
+
+            // performs the walk
+            while (true) {
+
+                // get random neighbor of last in path
+                let step = path[path.length - 1];
+
+                let randNeighbor = this.adjList[step].neighbors[Math.floor(Math.random() * this.adjList[step].neighbors.length)];
+
+                // is neighbor in maze?
+                if (maze.indexOf(randNeighbor) !== -1) {
+
+                    // add path to maze
+                    path.forEach(el => {
+                        maze.push(el);
+                        options.splice(options.indexOf(el), 1);
+                    });
+
+                    // add randNeighbor to path AFTER path has been added to maze
+                    // randNeighbor is already in maze according to the if statement above
+                    path.push(randNeighbor);
+
+                    // make the necessary edges along the path
+                    for (let i = 0; i < path.length - 1; i++) {
+                        this.createEdge(path[i], path[i + 1]);
+                    }
+
+                    break;
+                }
+                // is neighbor in path?
+                if (path.indexOf(randNeighbor) !== -1) {
+                    // if yes,
+                    // remove all from path after neighbor
+                    path.splice(path.indexOf(randNeighbor) + 1);
+
+                    if (path.length <= 0) {
+                        break;
+                    }
+                } else {
+                    // step to the random neighbor for the next iteration of the walk
+                    path.push(randNeighbor);
+                }
+            }
+        }
+    }
+
     visualize() {
         let binaryEdges = [];
         // for each vert in adjList
