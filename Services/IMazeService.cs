@@ -8,12 +8,8 @@ namespace MazeGenerator.Services
 {
     public interface IMazeService
     {
-        int Height { get; set; }
-        int Width { get; set; }
-        int StartingPoint { get; set; }
+        string GenerationAlgorithm { get; set; }
         IMaze GenerateMaze();
+        IMaze Maze { get; set; }
     }
 }
-/*
- 
- */

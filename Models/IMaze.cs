@@ -1,7 +1,11 @@
-﻿namespace MazeGenerator.Models
+﻿using System.Collections.Generic;
+
+namespace MazeGenerator.Models
 {
     public interface IMaze
     {
-        int[][] Graph { get; set; }
+        int EdgeLength { get; set; }
+        int StartingPoint { get; set; }
+        List<Vertex> Graph { get; set; }
     }
 }
