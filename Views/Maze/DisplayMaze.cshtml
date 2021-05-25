@@ -1,0 +1,111 @@
+﻿@using MazeGenerator.Models
+
+@model SquareMaze
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Maze Generator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        #mazeContainer {
+            margin: 0 auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 0 auto;
+            font-size: .5rem;
+        }
+
+        .trow {
+            padding: 0;
+            margin: 0;
+            width: 6rem;
+        }
+
+        .cell {
+            min-width: 20px;
+            height: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Maze TIME!</h1>
+
+    @*@Model.Graph*@
+
+    @{
+        var maze = (SquareMaze)ViewData["Maze"];
+        Console.WriteLine(maze);
+    }
+
+    @*
+        Get graph info
+        graph.visualize
+        create HTML
+    *@
+
+    @using (Html.BeginForm("MazeForm", "maze", FormMethod.Post))
+    {
+        <span>EdgeLength*: </span> @Html.TextBoxFor(m => m.EdgeLength) <br />
+        <span>Creation Algorithm*: </span> @Html.DropDownListFor(
+         m => m.GenerationAlgorithm,
+         new SelectList(Enum.GetValues(typeof(Algorithm))),
+         "Select Maze Creation Algorithm"
+       );
+        <br /><input type="submit" />
+    }
+
+<div id="mazeContainer">
+    <table>
+        
+        @{
+            var binaryEdges = maze.Visualize();
+            Console.WriteLine("=============================");
+            Console.WriteLine("binary edges: ", binaryEdges.ToString());
+
+            int counter = 0;
+
+            for (int i = 0; i < binaryEdges.Count; i++)
+            {
+
+                <tr class="trow">
+                    @{ 
+                        for (int j = 0; j < binaryEdges[i].Count; j++)
+                        {
+                            var edges = binaryEdges[i][j];
+                            string styles = "";
+
+                            if (edges[0] == 0) { styles += "border-top:2px solid;"; }
+                            if (edges[1] == 0) { styles += "border-right:2px solid;"; }
+                            if (edges[2] == 0) { styles += "border-bottom:2px solid;"; }
+                            if (edges[3] == 0) { styles += "border-left:2px solid;"; }
+
+                            <td class="cell" style="@styles">@counter.ToString()</td>
+                            counter++;
+                        }
+                    }
+                </tr>
+            }
+        }
+    </table>
+</div>
+
+    <div>
+        @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+        <a asp-action="Index">Back to List</a>
+    </div>
+</body>
+</html>

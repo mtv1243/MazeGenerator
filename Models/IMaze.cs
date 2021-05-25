@@ -7,5 +7,7 @@ namespace MazeGenerator.Models
         int EdgeLength { get; set; }
         int StartingPoint { get; set; }
         List<Vertex> Graph { get; set; }
+        void CreateMazeAldous();
+        List<List<List<int>>> Visualize();
     }
 }

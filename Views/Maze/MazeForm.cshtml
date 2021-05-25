@@ -1,0 +1,36 @@
+﻿@using MazeGenerator.Models
+
+@model SquareMaze
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Maze Generator</title>
+</head>
+<body>
+
+    <h1>Maze TIME!</h1>
+
+    @using (Html.BeginForm("MazeForm", "maze", FormMethod.Post))
+    {
+        <span>EdgeLength*: </span> @Html.TextBoxFor(m => m.EdgeLength) <br />
+        <span>Creation Algorithm*: </span> @Html.DropDownListFor(
+                                            m => m.GenerationAlgorithm,
+                                            new SelectList(Enum.GetValues(typeof(Algorithm))),
+                                            "Select Maze Creation Algorithm"
+                                          );
+        <br/><input type="submit" />
+    }
+
+    <div>
+        @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+        <a asp-action="Index">Back to List</a>
+    </div>
+</body>
+</html>
